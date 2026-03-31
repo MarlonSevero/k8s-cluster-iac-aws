@@ -1,0 +1,9 @@
+- hosts: controlplane
+  become: yes
+
+  tasks:
+    - name: Criar pasta em /tmp teste inicial ansible
+      file:
+        path: /tmp/minha_pasta
+        state: directory
+        mode: '0755'

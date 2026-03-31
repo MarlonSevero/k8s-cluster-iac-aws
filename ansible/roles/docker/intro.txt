@@ -1,0 +1,11 @@
+🧠 Responsabilidade
+
+Instalar e configurar container runtime
+
+O que faz:
+Instala Docker ou containerd
+Configura serviço
+Habilita no boot
+
+👉 Sem isso:
+💀 Kubernetes nem sobe

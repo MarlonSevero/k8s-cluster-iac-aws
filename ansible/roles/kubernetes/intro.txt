@@ -1,0 +1,15 @@
+🧠 Responsabilidade
+
+Subir o cluster Kubernetes
+
+O que faz:
+Instala:
+kubeadm
+kubelet
+kubectl
+Inicializa o cluster (kubeadm init)
+Gera token
+Faz workers entrarem (kubeadm join)
+Instala network plugin (Calico, Flannel, etc.)
+
+👉 Essa é a role mais crítica
