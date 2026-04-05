@@ -47,6 +47,11 @@
       file:
         path: /etc/containerd
         state: directory
+    
+    - name: Instalacao containerd
+      apt:
+        name: containerd.io
+        state: present
 
     - name: Gerar config padrão
       command: containerd config default
