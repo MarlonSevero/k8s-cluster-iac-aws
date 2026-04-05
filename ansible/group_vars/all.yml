@@ -1,4 +1,4 @@
-control_plane_ip: 44.201.5.62
+control_plane_ip: 44.204.100.28
 worker1_ip: 10.0.10.20
 worker2_ip: 10.0.10.30
 

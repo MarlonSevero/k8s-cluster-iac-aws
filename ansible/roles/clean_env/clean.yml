@@ -1,0 +1,31 @@
+- hosts: k8smaster
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Remover Docker e componentes conflitantes
+      apt:
+        name:
+          - docker.io
+          - docker-ce
+          - docker-ce-cli
+          - docker-buildx-plugin
+          - docker-compose-plugin
+          - docker-ce-rootless-extras
+        state: absent
+        purge: yes
+
+    - name: Remover containerd do Debian (se existir)
+      apt:
+        name: containerd
+        state: absent
+        purge: yes
+
+    - name: Remover diretórios antigos
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/lib/docker
+        - /etc/docker
+        - /var/lib/containerd

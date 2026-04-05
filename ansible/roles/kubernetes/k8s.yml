@@ -1,0 +1,59 @@
+- hosts: k8smaster
+
+  become: yes
+  
+  gather_facts: yes
+
+  tasks:
+    - name: Instalar dependências
+      apt:
+        name:
+          - gnupg
+          - ca-certificates
+          - curl
+        state: present
+    
+    - name: Baixar e instalar chave GPG Kubernetes v1.35
+      shell: |
+        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes.gpg
+
+    - name: Converter chave
+      command: gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg /tmp/kubernetes-archive-keyring.gpg
+      args:
+        creates: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+    
+    - name: Ajustar permissão da chave
+      file:
+        path: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        mode: '0644'
+
+        
+    - name: Adicionar repositório Kubernetes v1.35
+      shell: |
+        echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+      args:
+        creates: /etc/apt/sources.list.d/kubernetes.list
+
+
+    - name: Atualizar cache apt
+      apt:
+        update_cache: yes
+
+    - name: Instalar kubectl, kubelet e kubeadm
+      apt:
+        name:
+          - kubectl
+          - kubelet
+          - kubeadm
+        state: present
+
+    - name: Desabilitar swap (runtime)
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+    - name: Remover swap do fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*swap.*)$'

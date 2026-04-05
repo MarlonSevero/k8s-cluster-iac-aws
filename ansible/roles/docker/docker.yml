@@ -3,34 +3,6 @@
   gather_facts: yes
 
   tasks:
-    ################LIMPEZA DE COMPONENTES ANTIGOS################
-    # - name: Remover Docker e componentes conflitantes
-    #   apt:
-    #     name:
-    #       - docker.io
-    #       - docker-ce
-    #       - docker-ce-cli
-    #       - docker-buildx-plugin
-    #       - docker-compose-plugin
-    #       - docker-ce-rootless-extras
-    #     state: absent
-    #     purge: yes
-
-    # - name: Remover containerd do Debian (se existir)
-    #   apt:
-    #     name: containerd
-    #     state: absent
-    #     purge: yes
-
-    # - name: Remover diretórios antigos
-    #   file:
-    #     path: "{{ item }}"
-    #     state: absent
-    #   loop:
-    #     - /var/lib/docker
-    #     - /etc/docker
-    #     - /var/lib/containerd
-#########################################################
 
     - name: Atualizar cache apt
       apt:
@@ -69,15 +41,6 @@
     - name: Adicionar repositório Docker
       apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
-        state: present
-
-    - name: Atualizar cache apt (repo novo)
-      apt:
-        update_cache: yes
-
-    - name: Instalar containerd
-      apt:
-        name: containerd.io
         state: present
 
     - name: Criar diretório config
@@ -141,29 +104,3 @@
         name: "{{ ansible_user }}"
         groups: docker
         append: yes
-
-    # 🔥 IMPORTANTE PRA K8S
-    - name: Desabilitar swap (runtime)
-      command: swapoff -a
-      when: ansible_swaptotal_mb > 0
-
-    - name: Remover swap do fstab
-      replace:
-        path: /etc/fstab
-        regexp: '^([^#].*swap.*)$'
-        replace: '# \1'
-    
-    - name: Instalar dependências
-      apt:
-        name:
-          - gnupg
-          - ca-certificates
-          - curl
-        state: present
-
-#   # handlers:
-
-#   #   - name: restart docker
-#   #     service:
-#   #       name: "{{ docker_service }}"
-#   #       state: restarted
