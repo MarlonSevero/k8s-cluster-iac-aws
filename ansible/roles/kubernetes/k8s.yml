@@ -20,13 +20,13 @@
         creates: /etc/apt/keyrings/kubernetes.gpg
 
     - name: Converter chave
-      command: gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg /tmp/kubernetes-archive-keyring.gpg
+      command: gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
       args:
-        creates: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        creates: /etc/apt/keyrings/kubernetes.gpg
     
     - name: Ajustar permissão da chave
       file:
-        path: /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+        path: /etc/apt/keyrings/kubernetes.gpg
         mode: '0644'
 
         
@@ -57,3 +57,6 @@
       replace:
         path: /etc/fstab
         regexp: '^([^#].*swap.*)$'
+
+    - name: Travar atualizações de kubelet, kubeadm e kubectl
+      command: sudo apt-mark hold kubelet kubeadm kubectl
